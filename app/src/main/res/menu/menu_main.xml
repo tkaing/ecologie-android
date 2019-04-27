@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.recycle1.MainActivity">
+    <item
+        android:id="@+id/connexion"
+        android:title="@string/connexion"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/Parcours"
+        android:title="@string/Parcours"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/profil"
+        android:title="@string/Profil"
+        app:showAsAction="never" />
+
+</menu>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">recycle1</string>
+    <string name="action_settings">Settings</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="Connexion">Connexion</string>
+    <string name="connexion">connexion</string>
+    <string name="Acceuil">Acceuil</string>
+    <string name="page">page</string>
+    <string name="Parcours">Parcours</string>
+    <string name="Association">Association</string>
+    <string name="Recycle">Recycle</string>
+    <string name="Profil">Profil</string>
+    <string name="rechercher">Recherche</string>
+</resources>

@@ -1,7 +1,15 @@
 apply plugin: 'com.android.application'
 
+
+project.ext {
+    butterKnifeVersion = "8.8.1"
+}
 android {
     compileSdkVersion 28
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "com.example.recycle1"
         minSdkVersion 15
@@ -14,6 +22,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable = false
+            jniDebuggable = false
         }
     }
 }
@@ -30,4 +40,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation "com.google.android.gms:play-services-location:15.0.1"
+    // cette ligne nous permettra de recuperer la librery necessaire au requete
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    // cette ligne nous permettra de faire un GsonConverterFactory dans le network provider elle import une librerie
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.0'
+    implementation "com.jakewharton:butterknife:$butterKnifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
+
+
 }

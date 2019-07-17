@@ -30,7 +30,7 @@ public class NetworkProvider {
         return instance;
     }
 
-    private NetworkProvider() {
+    public NetworkProvider() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://thawing-fjord-12780.herokuapp.com/")
                 //On appel GsonConverterFactory qui a été implementer dans le gradle dependencies  avant et qui recuperere un type et un objet pour renvoyer un objet
@@ -106,23 +106,10 @@ public class NetworkProvider {
     }
 
 
-    public void getUserCriteria (Listner<UserDTO> listner) {
-        ecologieServices.getUserCriteria().enqueue(new Callback<UserDTO>() {
-            @Override
-            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                UserDTO userDTO = response.body();
+    public void getUserCriteria (String id ,Listner<UserDTO> listner) {
 
-                Log.d("dara",userDTO.toString());
-                listner.onSuccess(userDTO);
-            }
-
-            @Override
-            public void onFailure(Call<UserDTO> call, Throwable t) {
-
-                listner.onError(t);
-            }
-        });
     }
+
     public interface Listner<T> {
         void onSuccess(T data);
         void onError(Throwable t);

@@ -8,22 +8,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.recycle1.R;
-import com.example.recycle1.data.dto.AssociationDTO;
-import com.example.recycle1.data.dto.UserDTO;
-import com.example.recycle1.data.service.NetworkProvider;
 
-import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ConnexionFragment extends Fragment {
+    String login = "user";
+    String password = "user";
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.Connexion);
-
-
 
 
     }
@@ -32,7 +35,6 @@ public class ConnexionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.connexion, container, false);
+        return inflater.inflate(R.layout.connexion_fragment, container, false);
     }
-
 }

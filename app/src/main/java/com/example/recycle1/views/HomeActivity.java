@@ -59,6 +59,8 @@ public class HomeActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         inHome = true;
+        this.setTitle("Home");
+
         //header side menu information
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerview = navigationView.getHeaderView(0);

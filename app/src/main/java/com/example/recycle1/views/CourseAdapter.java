@@ -36,8 +36,8 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
 
     @Override public void onBindViewHolder(@NonNull CourseViewHolder courseViewHolder, int i) {
         Course course = courseList.get(i);
-        courseViewHolder.nameTv.setText(course.getTheme());
-        courseViewHolder.idTv.setText(course.getId());
+        courseViewHolder.nameTv.setText(course.getName());
+        courseViewHolder.idTv.setText(course.getCity());
         if (itemClickListener != null) {
             courseViewHolder.itemView.setOnClickListener(v -> itemClickListener.onClick(course));
         }

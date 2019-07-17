@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.example.recycle1.R;
 import com.example.recycle1.data.model.Course;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.recycle1.views.HomeActivity.inHome;
 
@@ -37,19 +39,19 @@ public class CourseShowFragment extends Fragment implements CourseFragment.Cours
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.parcours_show, container, false);
+        View v = inflater.inflate(R.layout.course_show_fragment, container, false);
         TextView id = v.findViewById(R.id.id_tv);
         TextView createdAt = v.findViewById(R.id.createdat_tv);
-        TextView theme = v.findViewById(R.id.theme_tv);
+        TextView name = v.findViewById(R.id.theme_tv);
         TextView horraire = v.findViewById(R.id.heure_tv);
         TextView lieu = v.findViewById(R.id.place_tv);
         TextView endon = v.findViewById(R.id.endon_tv);
         id.setText(courseShow.getId());
-        theme.setText(courseShow.getTheme());
-        horraire.setText(courseShow.getStartOn());
-        lieu.setText(courseShow.getLocation());
-        endon.setText(courseShow.getEndOn());
-        createdAt.setText(courseShow.getCreatedAt());
+        name.setText(courseShow.getName());
+        horraire.setText(getDate(courseShow.getStartOn()));
+        lieu.setText(courseShow.getAddress() + " " + courseShow.getZip() + " "+ courseShow.getCity());
+        endon.setText(getDate(courseShow.getEndOn()));
+        createdAt.setText(getDate(courseShow.getCreatedAt()));
         return v;
     }
 
@@ -59,5 +61,17 @@ public class CourseShowFragment extends Fragment implements CourseFragment.Cours
 
     public Course getCourseShow() {
         return courseShow;
+    }
+    private String getDate(String timestamp){
+        long timeStamp = Long.parseLong(timestamp);
+
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            Date netDate = (new Date(timeStamp));
+            return sdf.format(netDate);
+        }
+        catch(Exception ex){
+            return ex.toString();
+        }
     }
 }

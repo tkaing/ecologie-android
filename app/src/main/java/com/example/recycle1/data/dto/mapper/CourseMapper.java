@@ -20,12 +20,22 @@ public class CourseMapper {
 
     public static Course map(CourseDTO courseDTO) {
         Course course = new Course();
-        course.setCreatedAt(courseDTO.getCreatedAt());
+        course.setId(courseDTO.getId());
+        course.setName(courseDTO.getName());
+        course.setStartOn(courseDTO.getStartOn());
         course.setEndOn(courseDTO.getEndOn());
         course.setLocation(courseDTO.getLocation());
-        course.setStartOn(courseDTO.getStartOn());
-        course.setTheme(courseDTO.getTheme());
-        course.setId(courseDTO.getId());
+        course.setAddress(courseDTO.getAddress());
+        course.setZip(courseDTO.getZip());
+        course.setCity(courseDTO.getCity());
+        course.setRating(courseDTO.getRating());
+        course.setGlassWaste(courseDTO.getGlassWaste());
+        course.setPlasticWaste(courseDTO.getPlasticWaste());
+        course.setFoodWaste(courseDTO.getFoodWaste());
+        course.setOtherWaste(courseDTO.getOtherWaste());
+        course.setAssociation(courseDTO.getAssociation());
+        course.setCreatedAt(courseDTO.getCreatedAt());
+
         return course;
     }
 }

@@ -1,9 +1,13 @@
 package com.example.recycle1.views;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -11,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
@@ -137,6 +142,16 @@ public class HomeActivity extends AppCompatActivity
                 // Permission is not granted
                 // Should we show an explanation?
                 // Add a marker in Paris and move the camera
+
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                    buildAlertMessageNoGps();
+                } else {
+                    LocationListener locationListener = new MyLocationListener();
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+                }
+
                 LatLng paris = new LatLng(48.8534, 2.3488);
                 mMap.addMarker(new MarkerOptions().position(paris).title("Marker in Paris"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(paris, 17f));
@@ -315,6 +330,22 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
 }

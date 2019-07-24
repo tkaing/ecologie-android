@@ -13,6 +13,13 @@ public class User {
     String location;
     String createdAt;
 
+    public User() {
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

@@ -2,6 +2,7 @@ package com.example.recycle1.data.service;
 import com.example.recycle1.data.dto.AssociationDTO;
 import com.example.recycle1.data.dto.CourseDTO;
 import com.example.recycle1.data.dto.UserDTO;
+import com.example.recycle1.data.model.User;
 
 import java.util.List;
 
@@ -22,7 +23,6 @@ public interface EcologieServices {
     @GET("associations") Call<List<AssociationDTO>> getAssociations();
     @GET("courses") Call<List<CourseDTO>> getCourses();
     @GET("users") Call<List<UserDTO>> getUsers();
-    @POST("users/criteria") Call<UserDTO> getUserCriteria(@Body() String id);
-    @POST("/users/criteria")
-    UserDTO postUserCriteria(@Body String body);
+  /*  @POST("users/criteria")
+    void createUser(@Body User user, Callback<User> userCallback);*/
 }

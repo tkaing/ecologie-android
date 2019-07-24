@@ -6,6 +6,7 @@ import com.example.recycle1.data.dto.AssociationDTO;
 import com.example.recycle1.data.dto.CourseDTO;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.dto.mapper.CourseMapper;
+import com.example.recycle1.data.model.Association;
 import com.example.recycle1.data.model.Course;
 import com.example.recycle1.data.model.User;
 
@@ -106,8 +107,20 @@ public class NetworkProvider {
     }
 
 
-    public void getUserCriteria (String id ,Listner<UserDTO> listner) {
+    public void getUserCriteria (User user, Listner<UserDTO> listner) {
+    /*    Call<User> call = ecologieServices.createUser(user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
 
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+    */
     }
 
     public interface Listner<T> {

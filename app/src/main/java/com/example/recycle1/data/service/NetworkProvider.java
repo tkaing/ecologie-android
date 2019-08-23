@@ -1,16 +1,20 @@
 package com.example.recycle1.data.service;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.recycle1.data.dto.AssociationDTO;
 import com.example.recycle1.data.dto.CourseDTO;
+import com.example.recycle1.data.dto.LoginDTO;
 import com.example.recycle1.data.dto.UserDTO;
-import com.example.recycle1.data.dto.mapper.CourseMapper;
-import com.example.recycle1.data.model.Association;
+import com.example.recycle1.data.mapper.CourseMapper;
 import com.example.recycle1.data.model.Course;
-import com.example.recycle1.data.model.User;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,7 +47,7 @@ public class NetworkProvider {
 
 
     public void getAssociations (Listner<List<AssociationDTO>> listner) {
-        Log.d("AssociationActivity","oups");
+
         ecologieServices.getAssociations().enqueue(new Callback<List<AssociationDTO>>() {
 
             @Override
@@ -59,9 +63,9 @@ public class NetworkProvider {
             public void onFailure(Call<List<AssociationDTO>> call, Throwable t) {
 
                 listner.onError(t);
+                Log.d("getAssociations",t.toString());
             }
         });
-        Log.d("AssociationActivity","oups");
 
     }
 
@@ -93,34 +97,120 @@ public class NetworkProvider {
             public void onResponse(Call<List<UserDTO>> call, Response<List<UserDTO>> response) {
                 List<UserDTO> userDTOList = response.body();
 
-                Log.d("dara",userDTOList.toString());
                 listner.onSuccess(userDTOList);
             }
 
             @Override
             public void onFailure(Call<List<UserDTO>> call, Throwable t) {
 
-                Log.d("dara",".toString()");
+                Log.e("getUsers",t.toString());
                 listner.onError(t);
             }
         });
     }
 
 
-    public void getUserCriteria (User user, Listner<UserDTO> listner) {
-    /*    Call<User> call = ecologieServices.createUser(user);
-        call.enqueue(new Callback<User>() {
+    public void getUserCriteria () {
+        //defining the call
+
+
+        // create parameter with HashMap
+        Map<String, String> params = new HashMap<>();
+        params.put("_id", "5cee651652311800178aeaf8");
+
+        Call<List<UserDTO>> call = ecologieServices.refreshAppMetaConfig(params);
+        //calling the api
+        call.enqueue(new Callback<List<UserDTO>>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<List<UserDTO>> call, Response<List<UserDTO>> response) {
+
+
+                Log.d("TestPost", "end da");
+                Log.d("TestPost", response.body().toString());
 
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
+            public void onFailure(Call<List<UserDTO>> call, Throwable t) {
+                Log.d("TestPost","did you really think that's will work ? really?");
+                Log.e("TestPost",t.toString());
             }
         });
-    */
+
+    }
+    public void putUser (UserDTO userDTO) {
+        //defining the call
+        Log.d("putUser",userDTO.toString());
+        Call<UserDTO> call = ecologieServices.CreateUser(userDTO);
+        //calling the api
+        call.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+
+                Log.d("putUser", response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                Log.e("putUser",t.toString());
+            }
+        });
+
+    }
+    public void Login (UserDTO userDTO,Context context) {
+        //defining the call
+
+        Call<UserDTO> call = ecologieServices.Connect(userDTO);
+        //calling the api
+        call.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                Log.d("login", response.toString());
+                SharedPreferences sharedPreference = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                if(response.code() == 200) {
+                    response.body().toString();
+                    UserDTO user = response.body();
+                    sharedPreference
+                            .edit()
+                            .putBoolean("isConnected", true)
+                            .putString("email",user.getEmail())
+                            .putString("firstname",user.getFirstname())
+                            .putString("lastname",user.getLastname())
+                            .putString("birthdate",user.getBirthdate())
+                            .putString("createdAt",user.getCreatedAt())
+                            .apply();
+                    Toast.makeText(context,"connect",Toast.LENGTH_LONG).show();
+                } else if(response.code() == 422) {
+
+                    sharedPreference
+                            .edit()
+                            .putBoolean("isConnected", false)
+                            .apply();
+                    Toast.makeText(context,"Wrong Login",Toast.LENGTH_LONG).show();
+                } else if(response.code() == 401) {
+                    sharedPreference
+                            .edit()
+                            .putBoolean("isConnected", false)
+                            .apply();
+                    Toast.makeText(context,"Wrong password",Toast.LENGTH_LONG).show();
+
+                } else if(response.code() == 500) {
+                    sharedPreference
+                            .edit()
+                            .putBoolean("isConnected", false)
+                            .apply();
+                    Toast.makeText(context,"Server Error",Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(context,"Unexpected Error",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                Log.e("login",t.toString());
+            }
+        });
     }
 
     public interface Listner<T> {

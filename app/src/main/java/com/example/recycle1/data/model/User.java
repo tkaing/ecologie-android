@@ -4,14 +4,15 @@ import java.util.Date;
 
 public class User {
 
-    String id;
-    String email;
-    String firstname;
-    String lastname;
-    String birthdate;
-    String phone;
-    String location;
-    String createdAt;
+    protected String id;
+    protected String email;
+    protected String firstname;
+    protected String lastname;
+    protected String birthdate;
+    protected String password;
+    protected String phone;
+    protected String location;
+    protected String createdAt;
 
     public User() {
     }
@@ -60,6 +61,14 @@ public class User {
         this.birthdate = birthdate;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -91,7 +100,8 @@ public class User {
                 ", email='" + email + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
-                ", birthdate=" + birthdate +
+                ", birthdate='" + birthdate + '\'' +
+                ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", location='" + location + '\'' +
                 ", createdAt='" + createdAt + '\'' +

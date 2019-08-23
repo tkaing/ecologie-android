@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -32,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.recycle1.R;
 import com.example.recycle1.data.dto.AssociationDTO;
+import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.model.Association;
 import com.example.recycle1.data.model.Course;
 import com.example.recycle1.data.service.NetworkProvider;
@@ -194,32 +197,6 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //end of test
 
 
@@ -243,6 +220,20 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Get Session variable to check if the user is connected
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+
+        Boolean isConnected=false;
+        if(sharedPreferences.getBoolean("isConnected",true)){
+
+            isConnected=true;
+            Toast.makeText(this,"est connecté !! *o*",Toast.LENGTH_SHORT).show();
+        } else if (sharedPreferences.getBoolean("isConnected",false)) {
+
+            isConnected=false;
+            Toast.makeText(this,"est pas connecté §§§",Toast.LENGTH_SHORT).show();
+        }
+
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getCurrentLocation();
 
@@ -255,30 +246,55 @@ public class HomeActivity extends AppCompatActivity
         this.setTitle("Home");
 
 
+
+
         //header side menu information
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerview = navigationView.getHeaderView(0);
         TextView profilename = (TextView) headerview.findViewById(R.id.name);
+        LinearLayout header = (LinearLayout) headerview.findViewById(R.id.nav_header);
+
+
 
         //id of user
-        profilename.setText("Dennoun");
-        LinearLayout header = (LinearLayout) headerview.findViewById(R.id.nav_header);
-        headerview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Your code here
-                Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
-                if (mapFragment != null) {
-                    getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
+        if(isConnected){
+            profilename.setText(sharedPreferences.getString("firstname","No Name"));
+            headerview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Your code here
+                    sharedPreferences
+                            .edit()
+                            .putBoolean("isConnected", false)
+                            .putString("email","")
+                            .putString("firstname","")
+                            .putString("lastname","")
+                            .putString("birthdate","")
+                            .putString("createdAt","")
+                            .apply();
+                    Toast.makeText(getApplication(),"Disconnected",Toast.LENGTH_SHORT).show();
                 }
+            });
+        } else {
+            headerview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Your code here
+                    Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
+                    if (mapFragment != null) {
+                        getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
+                    }
 
 
-                FragmentTransaction profileFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                profileFragmentTransaction.replace(R.id.content_home, new ProfileFragment());
+                    FragmentTransaction profileFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    profileFragmentTransaction.replace(R.id.content_home, new ProfileFragment());
 
-                profileFragmentTransaction.commit();
-            }
-        });
+                    profileFragmentTransaction.commit();
+                }
+            });
+
+        }
+
         if (inHome) {
             setTitle("Home");
 
@@ -395,28 +411,43 @@ public class HomeActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         Fragment fragmenLogin = null;
-        if (id == R.id.login) {
-            fragmenLogin = new ConnexionFragment();
+        if (id == R.id.login) {fragmenLogin = new ConnexionFragment();}
 
-        }
+        // redirection vers login
         if (fragmenLogin != null) {
 
-            if (inHome) {
+            if (inHome) { HideMap();}
 
-                Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
 
-                getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
+                    Fragment fragment = new ConnexionFragment();
 
+            if(!fragment.isVisible()) {
+                FragmentTransaction fragmentTransactionLog = getSupportFragmentManager().beginTransaction();
+                fragmentTransactionLog.replace(R.id.content_home, fragmenLogin,"login");
+                fragmentTransactionLog.commit();
+                Toast.makeText(this, "login", Toast.LENGTH_LONG).show();
             }
-            FragmentTransaction fragmentTransactionLog = getSupportFragmentManager().beginTransaction();
-            fragmentTransactionLog.replace(R.id.content_home, fragmenLogin);
-
-            fragmentTransactionLog.commit();
-            Toast.makeText(this, "login", Toast.LENGTH_LONG).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public Fragment getVisibleFragment(){
+        FragmentManager fragmentManager = HomeActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if(fragments != null){
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
+    }
+
+    private void HideMap() {
+        Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
+        getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
     }
 
 

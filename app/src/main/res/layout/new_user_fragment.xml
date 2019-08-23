@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".views.NewUserFragment">
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0"
+        android:textSize="25dp"
+        android:textColor="@color/blueIndigo"
+        android:textAlignment="center"
+        android:text="Inscription" />
+    <TextView
+        android:id="@+id/firstname_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:textColor="@color/blueIndigo"
+        android:layout_gravity="start"
+        android:textAlignment="viewStart"
+        android:text="FirstName" />
+
+    <EditText
+        android:id="@+id/firstname_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/username"
+        android:layout_marginBottom="15dp"
+        android:layout_weight="0"
+        android:ems="10"
+        android:hint="name"
+        android:inputType="textPersonName"
+        android:shadowColor="@android:color/background_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:shadowColor="@android:color/background_light" />
+    <TextView
+        android:id="@+id/lastname_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:textColor="@color/blueIndigo"
+        android:layout_weight="0"
+        android:layout_gravity="start"
+        android:textAlignment="viewStart"
+        android:text="Lastname" />
+    <EditText
+        android:id="@+id/lastname_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/username"
+        android:layout_marginBottom="15dp"
+        android:layout_weight="0"
+        android:ems="10"
+        android:hint="lastname"
+        android:inputType="textPersonName"
+        android:shadowColor="@android:color/background_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:shadowColor="@android:color/background_light" />
+    <TextView
+        android:id="@+id/birthdate_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0"
+        android:textSize="12dp"
+        android:textColor="@color/blueIndigo"
+        android:layout_gravity="start"
+        android:textAlignment="viewStart"
+        android:text="birthdate" />
+
+    <EditText
+        android:id="@+id/birthdate_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:autofillHints="@string/username"
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:hint="DD/MM/AAAA"
+        android:shadowColor="@android:color/background_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:inputType="date"
+        tools:shadowColor="@android:color/background_light" />
+    <TextView
+        android:id="@+id/adresse_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0"
+        android:textSize="12dp"
+        android:textColor="@color/blueIndigo"
+        android:layout_gravity="start"
+        android:textAlignment="viewStart"
+        android:text="Adresse" />
+    <EditText
+        android:id="@+id/adresse_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="XX rue..."
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:layout_weight="0"
+        android:hint="XX rue..."
+        android:inputType="text"
+        android:shadowColor="@android:color/background_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:shadowColor="@android:color/background_light" />
+    <TextView
+        android:id="@+id/phone_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:layout_weight="0"
+        android:textColor="@color/blueIndigo"
+        android:layout_gravity="start"
+        android:textAlignment="viewStart"
+        android:text="phone" />
+    <EditText
+        android:id="@+id/phone_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/username"
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:layout_weight="0"
+        android:hint="06..."
+        android:inputType="phone"
+        android:shadowColor="@android:color/background_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:shadowColor="@android:color/background_light" />
+    <TextView
+        android:id="@+id/email_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:layout_weight="0"
+        android:textColor="@color/blueIndigo"
+        android:layout_gravity="start"
+        android:textAlignment="viewStart"
+        android:text="Email" />
+    <EditText
+        android:id="@+id/email_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/username"
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:hint="Exemple@mail.fr"
+        android:layout_weight="0"
+        android:inputType="textEmailAddress"
+        android:shadowColor="@android:color/background_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:shadowColor="@android:color/background_light" />
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center"
+            android:text="Validar" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

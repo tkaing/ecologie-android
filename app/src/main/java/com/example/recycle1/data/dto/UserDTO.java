@@ -14,6 +14,25 @@ public class UserDTO {
     @SerializedName("phone") private String phone;
     @SerializedName("location") private String location;
     @SerializedName("createdAt") private String createdAt;
+    @SerializedName("password") private String password;
+
+    public UserDTO() {
+    }
+
+    public UserDTO(String email, String firstname, String lastname, String birthdate, String phone, String location, String createdAt) {
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.birthdate = birthdate;
+        this.phone = phone;
+        this.location = location;
+        this.createdAt = createdAt;
+    }
+
+    public UserDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public String getId() {
         return id;
@@ -77,6 +96,14 @@ public class UserDTO {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

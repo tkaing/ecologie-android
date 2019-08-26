@@ -37,6 +37,7 @@ import com.example.recycle1.data.dto.AssociationDTO;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.model.Association;
 import com.example.recycle1.data.model.Course;
+import com.example.recycle1.data.service.GMailSender;
 import com.example.recycle1.data.service.NetworkProvider;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -220,6 +221,11 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+
         //Get Session variable to check if the user is connected
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
 

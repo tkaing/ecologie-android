@@ -147,6 +147,38 @@ public class NetworkProvider {
             @Override
             public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
 
+
+                if(response.code() == 200 ) {
+                    Thread thread = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try  {
+                                //Your code goes here
+                                try {
+                                    GMailSender sender = new GMailSender(
+                                            "associationecolo@gmail.com", "ecology2019");
+                                    sender.sendMail("Creation de compte",
+                                            "Felicitaion M/Mme " + userDTO.getLastname() + " votre compte a été crée ! Vous trouverez ci joint vos informations de connexion : \n" +
+                                                    "identifiant : " + userDTO.getEmail() + "\n " +
+                                                    "Mot de passe : " + response.body().getPassword()+"\n" +
+                                            "Esperant vous voir bientot sur un de nos parcours ",
+                                            "ecologyAssociation@hotmail.com",
+                                            userDTO.getEmail());
+                                    Log.d("sendmail","that's works !");
+
+                                } catch (Exception e) {
+                                    Log.e("SendMail", e.getMessage(), e);
+
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                    thread.start();
+                }
                 Log.d("putUser", response.body().toString());
             }
 

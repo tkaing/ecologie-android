@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.recycle1.R;
+import com.example.recycle1.SeizureControl;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.model.User;
 import com.example.recycle1.data.service.NetworkProvider;
@@ -55,6 +56,7 @@ public class NewUserFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                     UserDTO userDTO = new UserDTO(
                             email_ev.getText().toString(),

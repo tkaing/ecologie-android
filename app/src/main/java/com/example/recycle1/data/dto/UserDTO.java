@@ -14,7 +14,7 @@ public class UserDTO {
     @SerializedName("phone") private String phone;
     @SerializedName("location") private String location;
     @SerializedName("createdAt") private String createdAt;
-    @SerializedName("password") private String password;
+    @SerializedName("code") private String password;
 
     public UserDTO() {
     }
@@ -27,6 +27,17 @@ public class UserDTO {
         this.phone = phone;
         this.location = location;
         this.createdAt = createdAt;
+    }
+
+    public UserDTO(String email, String firstname, String lastname, String birthdate, String phone, String location, String createdAt, String password) {
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.birthdate = birthdate;
+        this.phone = phone;
+        this.location = location;
+        this.createdAt = createdAt;
+        this.password = password;
     }
 
     public UserDTO(String email, String password) {
@@ -108,15 +119,16 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDTO{" +
                 "id='" + id + '\'' +
                 ", email='" + email + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
-                ", birthdate=" + birthdate +
+                ", birthdate='" + birthdate + '\'' +
                 ", phone='" + phone + '\'' +
                 ", location='" + location + '\'' +
                 ", createdAt='" + createdAt + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

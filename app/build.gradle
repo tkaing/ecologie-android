@@ -5,6 +5,9 @@ project.ext {
     butterKnifeVersion = "8.8.1"
 }
 android {
+    packagingOptions {
+        pickFirst 'META-INF/LICENSE.txt' // picks the JavaMail license file
+    }
     compileSdkVersion 28
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -25,6 +28,12 @@ android {
             debuggable = false
             jniDebuggable = false
         }
+    }
+}
+repositories {
+    jcenter()
+    maven {
+        url "https://maven.java.net/content/groups/public/"
     }
 }
 
@@ -49,6 +58,9 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.sun.mail:android-mail:1.6.2'
+    implementation 'com.sun.mail:android-activation:1.6.2'
+
 
 
 }

@@ -18,7 +18,7 @@
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Identifiant" />
+        tools:text="@string/email" />
 
     <EditText
         android:id="@+id/login_ev"
@@ -68,7 +68,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:background="#3F51B5"
-        android:text="@string/Connexion"
+        android:text="@string/connection"
         android:textColor="@android:color/background_light"
         tools:layout_editor_absoluteX="100dp"
         tools:layout_editor_absoluteY="339dp" />
@@ -84,7 +84,7 @@
             android:id="@+id/createNewUser"
             android:layout_width="107dp"
             android:layout_height="22dp"
-            android:text="S'inscrire ?"
+            android:text="@string/registerQuestion"
             android:textColor="#3F51B5"
             tools:layout_editor_absoluteX="100dp"
             tools:layout_editor_absoluteY="391dp" />
@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#3F51B5"
-            android:text="mot de passe oublié ?"
+            android:text="@string/forgot_your_password"
             tools:layout_editor_absoluteX="231dp"
             tools:layout_editor_absoluteY="391dp" />
     </LinearLayout>

@@ -2,15 +2,21 @@ package com.example.recycle1.data.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.recycle1.Methodes;
+import com.example.recycle1.R;
 import com.example.recycle1.data.dto.AssociationDTO;
 import com.example.recycle1.data.dto.CourseDTO;
 import com.example.recycle1.data.dto.LoginDTO;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.mapper.CourseMapper;
 import com.example.recycle1.data.model.Course;
+import com.example.recycle1.views.ConfirmNewUserFragment;
+import com.example.recycle1.views.NewUserFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +29,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkProvider {
+    Methodes methodes = new Methodes();
     EcologieServices ecologieServices;
 
     //Singleton pas tres bien car tout le monde peut y acceder
@@ -138,7 +145,7 @@ public class NetworkProvider {
         });
 
     }
-    public void putUser (UserDTO userDTO) {
+    public void putUser (UserDTO userDTO, Context context, FragmentManager fragmentManager) {
         //defining the call
         Log.d("putUser",userDTO.toString());
         Call<UserDTO> call = ecologieServices.CreateUser(userDTO);
@@ -149,35 +156,16 @@ public class NetworkProvider {
 
 
                 if(response.code() == 200 ) {
-                    Thread thread = new Thread(new Runnable() {
+                    methodes.SendMailPassword(userDTO.getLastname(),userDTO.getEmail(), response.body().getPassword());
+                    methodes.GoTo(new ConfirmNewUserFragment(), fragmentManager);
 
-                        @Override
-                        public void run() {
-                            try  {
-                                //Your code goes here
-                                try {
-                                    GMailSender sender = new GMailSender(
-                                            "associationecolo@gmail.com", "ecology2019");
-                                    sender.sendMail("Creation de compte",
-                                            "Felicitaion M/Mme " + userDTO.getLastname() + " votre compte a été crée ! Vous trouverez ci joint vos informations de connexion : \n" +
-                                                    "identifiant : " + userDTO.getEmail() + "\n " +
-                                                    "Mot de passe : " + response.body().getPassword()+"\n" +
-                                            "Esperant vous voir bientot sur un de nos parcours ",
-                                            "ecologyAssociation@hotmail.com",
-                                            userDTO.getEmail());
-                                    Log.d("sendmail","that's works !");
 
-                                } catch (Exception e) {
-                                    Log.e("SendMail", e.getMessage(), e);
-
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-                    thread.start();
+                }
+                if (response.code() == 422) {
+                    methodes.Alert(context, "Error",context.getString(R.string.error422putUser),"Ok");
+                }
+                if (response.code() == 500) {
+                    methodes.Alert(context, "Error",context.getString(R.string.serverError),"Ok");
                 }
                 Log.d("putUser", response.body().toString());
             }

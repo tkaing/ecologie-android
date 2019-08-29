@@ -8,16 +8,6 @@
     tools:context=".views.NewUserFragment">
 
     <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_weight="0"
-        android:textSize="25dp"
-        android:textColor="@color/blueIndigo"
-        android:textAlignment="center"
-        android:text="Inscription" />
-    <TextView
         android:id="@+id/firstname_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +27,7 @@
         android:layout_marginBottom="15dp"
         android:layout_weight="0"
         android:ems="10"
-        android:hint="name"
+        android:hint="@string/name"
         android:inputType="textPersonName"
         android:shadowColor="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +43,7 @@
         android:layout_weight="0"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:text="Lastname" />
+        android:text="@string/lastname" />
     <EditText
         android:id="@+id/lastname_ev"
         android:layout_width="match_parent"
@@ -62,7 +52,7 @@
         android:layout_marginBottom="15dp"
         android:layout_weight="0"
         android:ems="10"
-        android:hint="lastname"
+        android:hint="@string/lastname"
         android:inputType="textPersonName"
         android:shadowColor="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +68,7 @@
         android:textColor="@color/blueIndigo"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:text="birthdate" />
+        android:text="@string/birthdate" />
 
     <EditText
         android:id="@+id/birthdate_ev"
@@ -88,7 +78,7 @@
         android:autofillHints="@string/username"
         android:layout_marginBottom="15dp"
         android:ems="10"
-        android:hint="DD/MM/AAAA"
+        android:hint="@string/dateHint"
         android:shadowColor="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -104,7 +94,7 @@
         android:textColor="@color/blueIndigo"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:text="Adresse" />
+        android:text="@string/adress" />
     <EditText
         android:id="@+id/adresse_ev"
         android:layout_width="match_parent"
@@ -113,7 +103,7 @@
         android:layout_marginBottom="15dp"
         android:ems="10"
         android:layout_weight="0"
-        android:hint="XX rue..."
+        android:hint="@string/adressHint"
         android:inputType="text"
         android:shadowColor="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,7 +119,7 @@
         android:textColor="@color/blueIndigo"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:text="phone" />
+        android:text="@string/phone" />
     <EditText
         android:id="@+id/phone_ev"
         android:layout_width="match_parent"
@@ -138,7 +128,7 @@
         android:layout_marginBottom="15dp"
         android:ems="10"
         android:layout_weight="0"
-        android:hint="06..."
+        android:hint="@string/hintPhone"
         android:inputType="phone"
         android:shadowColor="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +144,7 @@
         android:textColor="@color/blueIndigo"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:text="Email" />
+        android:text="@string/email" />
     <EditText
         android:id="@+id/email_ev"
         android:layout_width="match_parent"
@@ -185,7 +175,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center"
-            android:text="Validar" />
+            android:text="@string/validate" />
 
 
     </LinearLayout>

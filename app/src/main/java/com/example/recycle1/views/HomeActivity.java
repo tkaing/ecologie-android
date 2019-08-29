@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -32,8 +33,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.recycle1.Methodes;
 import com.example.recycle1.R;
 import com.example.recycle1.data.dto.AssociationDTO;
+import com.example.recycle1.data.dto.CourseDTO;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.model.Association;
 import com.example.recycle1.data.model.Course;
@@ -57,23 +61,25 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback , CourseFragment.CourseActivityListener {
 
 
+    Methodes methodes = new Methodes();
     //Test get position
     public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
     public static final int LOCATION_UPDATE_MIN_TIME = 5000;
+    public static final  Float associationsMarkercolor = BitmapDescriptorFactory.HUE_AZURE;
+    public static final  Float coursesMarkercolor = BitmapDescriptorFactory.HUE_GREEN;
 
 
 
 
-    private List<AssociationDTO> associationList;
 
     private LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             if (location != null) {
-                drawMarkerCurrentLocation(location);
+                methodes.drawMarkerCurrentLocation(location,mMap,getBaseContext());
                 mLocationManager.removeUpdates(mLocationListener);
             } else {
-                Log.d("Location","Location is null");
+                Log.e("Location","Location is null");
             }
         }
 
@@ -114,91 +120,47 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
-
-
-    private void initMap() {
-
-
-    }
-
     private void getCurrentLocation() {
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Location location = null;
         if (!(isGPSEnabled || isNetworkEnabled)) {
-            Log.d("noco","no connexion or no gps");
+            buildAlertMessageNoGps();
+
         }
         else {
-            Log.d("noco","co is here");
+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 if (isNetworkEnabled) {
-                    Log.d("noco","network is here");
+
                     mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                             LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
                     location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
                 } else {
-                    Log.d("noco","no network");
+                    methodes.Alert(this,this.getString(R.string.noGpsAndCoTitle), this.getString(R.string.enableGPSandConxMSG), "Ok");
                 }
 
                 if (isGPSEnabled) {
-                    Log.d("noco","gps is here");
                     mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                             LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
                     location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                }
+                } else {
+
+                           }
+
+
             }
         }
         if (location != null) {
-            Log.d("Location",String.format("getCurrentLocation(%f, %f)", location.getLatitude(),
-                    location.getLongitude()));
-            drawMarkerCurrentLocation(location);
+            methodes.drawMarkerCurrentLocation(location,mMap,getBaseContext());
         }
     }
 
-    private void drawMarkerCurrentLocation(Location location) {
-        if (mMap != null) {
-            mMap.clear();
-            LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.addMarker(new MarkerOptions()
-                    .position(gps)
-                    .title("Current Position"));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 12));
-        }
 
-    }
-
-    private void drawMarker(String location , String title ) {
-
-        Geocoder geocoder = new Geocoder(getBaseContext());
-        List<Address> addresses;
-
-        try {
-            addresses = geocoder.getFromLocationName(location, 1);
-            if(addresses.size() > 0) {
-                double latitude= addresses.get(0).getLatitude();
-                double longitude= addresses.get(0).getLongitude();
-                Log.d("latLongLocation",location );
-                Log.d("latitudeLongitude",latitude + " " + longitude );
-                if (mMap != null) {
-                    LatLng gps = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions()
-                            .position(gps)
-                            .title(title)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    //end of test
 
 
     CourseShowFragment courseShow = new CourseShowFragment();
@@ -211,8 +173,8 @@ public class HomeActivity extends AppCompatActivity
     /**
      * Variable declaration
      */
+    Boolean isConnected = false;
     private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationClient;
     private final int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
     public static boolean inHome = false;
 
@@ -229,15 +191,14 @@ public class HomeActivity extends AppCompatActivity
         //Get Session variable to check if the user is connected
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
 
-        Boolean isConnected=false;
+
         if(sharedPreferences.getBoolean("isConnected",true)){
 
             isConnected=true;
-            Toast.makeText(this,"est connecté !! *o*",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,this.getString(R.string.SuccefulLogin),Toast.LENGTH_SHORT).show();
         } else if (sharedPreferences.getBoolean("isConnected",false)) {
 
             isConnected=false;
-            Toast.makeText(this,"est pas connecté §§§",Toast.LENGTH_SHORT).show();
         }
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -322,6 +283,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         getAssociations();
+        getCourses();
 
 
     }
@@ -504,22 +466,17 @@ public class HomeActivity extends AppCompatActivity
         NetworkProvider.getInstance().getAssociations(new NetworkProvider.Listner<List<AssociationDTO>>() {
             @Override
             public void onSuccess(List<AssociationDTO> data) {
-                Log.d("AssociationActivity", data.toString());
-                    if(Geocoder.isPresent()) {
-                        for( AssociationDTO association: data){
+                if(Geocoder.isPresent()) {
+                    for( AssociationDTO association: data){
 
-                            drawMarker(association.getLocation(),association.getName());
-
+                        methodes.drawMarker(association.getLocation(),association.getName(),associationsMarkercolor,mMap,getBaseContext());
 
 
 
-                        }
 
                     }
 
-
-
-
+                }
             }
 
             @Override
@@ -528,7 +485,30 @@ public class HomeActivity extends AppCompatActivity
             }
         });
     }
+    /** METHODS for Courses  */
 
+    public void getCourses() {
+
+        NetworkProvider.getInstance().getCourses(new NetworkProvider.Listner<List<Course>>() {
+            @Override
+            public void onSuccess(List<Course> data) {
+                if(Geocoder.isPresent()) {
+                    for( Course course: data){
+                        String completeAdress = course.getAddress() + " " + course.getZip() + " " + course.getCity();
+
+
+                        methodes.drawMarker(completeAdress,course.getName(),coursesMarkercolor,mMap,getBaseContext());
+                    }
+
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Log.e("HomeActivity","Error Call API Get Associations :" + t.toString());
+            }
+        });
+    }
 
 
     @Override
@@ -543,24 +523,14 @@ public class HomeActivity extends AppCompatActivity
         } else {
             displatSelectedScreen(id);
         }
-
-
         return true;
     }
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage(this.getString(R.string.noGps))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setNegativeButton(this.getString(R.string.no), (dialog, id) -> dialog.cancel());
         final AlertDialog alert = builder.create();
         alert.show();
     }

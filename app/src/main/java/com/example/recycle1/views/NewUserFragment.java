@@ -1,6 +1,8 @@
 package com.example.recycle1.views;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.recycle1.Methodes;
 import com.example.recycle1.R;
 import com.example.recycle1.SeizureControl;
 import com.example.recycle1.data.dto.UserDTO;
@@ -28,6 +31,11 @@ import butterknife.ButterKnife;
 
 
 public class NewUserFragment extends Fragment {
+
+
+     Methodes methodes = new Methodes();
+
+    //Bind view
     @BindView(R.id.firstname_ev) TextView firstname_ev;
     @BindView(R.id.lastname_ev) TextView lastname_ev;
     @BindView(R.id.adresse_ev) TextView adresse_ev;
@@ -57,17 +65,68 @@ public class NewUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                SeizureControl seizureControl = new SeizureControl();
+                Methodes methodes = new Methodes();
 
-                    UserDTO userDTO = new UserDTO(
-                            email_ev.getText().toString(),
+
+
+                if (seizureControl.isNull(email_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.emailIsEmptySC) , "Ok");
+
+                }
+
+                /*
+                if (seizureControl.valiemail(email_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.invalidEmail) , "Ok");
+
+                }
+                  */
+                if (seizureControl.isNull(firstname_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.firstnameIsEmpty) , "Ok");
+
+                }
+                if (seizureControl.isNull(lastname_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.lastnameIsEmpty) , "Ok");
+                }
+                if (seizureControl.DateNullCS(birthdate_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.birthdateIsEmpty) , "Ok");
+
+                }
+                /*
+                if (seizureControl.isNull(adresse_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.adressIsempty) , "Ok");
+
+                }
+                */
+                if (seizureControl.isNull(adresse_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.adressIsEmptySC) , "Ok");
+
+                }
+
+                if (seizureControl.isNull(phone_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.phoneIsEmpty) , "Ok");
+
+                }
+                if (seizureControl.isTel(phone_ev.getText().toString())) {
+                    methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.invalidPhone) , "Ok");
+
+                }
+
+                UserDTO userDTO = new UserDTO(
+                        email_ev.getText().toString(),
                         firstname_ev.getText().toString(),
                         lastname_ev.getText().toString(),
-                            "1559127315.510997",
+                        "1559127315.510997",
                         phone_ev.getText().toString(),
                         adresse_ev.getText().toString(),
-                            "1559127315.510997");
+                        "1559127315.510997");
 
-                NetworkProvider.getInstance().putUser(userDTO);
+                NetworkProvider networkProvider = new NetworkProvider();
+                networkProvider.putUser(userDTO,getContext(),getFragmentManager());
+
+
+
+
 
             }
         });

@@ -12,7 +12,7 @@
         <item
             android:id="@+id/nav_parcours"
             android:icon="@drawable/ic_planet"
-            android:title="@string/Parcours" />
+            android:title="@string/course" />
 
         <item
             android:id="@+id/nav_waste"
@@ -27,7 +27,7 @@
             <item
                 android:id="@+id/nav_profil"
                 android:icon="@drawable/ic_menu_person"
-                android:title="@string/Profil" />
+                android:title="@string/profile" />
         </menu>
     </item>
 

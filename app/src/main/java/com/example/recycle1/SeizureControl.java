@@ -1,5 +1,7 @@
 package com.example.recycle1;
 
+import android.util.Log;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +25,7 @@ public class SeizureControl {
 
     public static boolean isNull(String text){
 
-        if(text == ""){
+        if(text.equals("")  || text == null){
 
             return true; //null
 
@@ -33,11 +35,11 @@ public class SeizureControl {
 
     }
 
-    public static boolean isUsername(String text) {
+    public static boolean isName(String text) {
 
 
 
-        if (text.matches("^[A-Za-z0-9]+$+") ) {
+        if (text.matches("^[a-z A-Z]+$") ) {
 
             return true;
 
@@ -49,7 +51,7 @@ public class SeizureControl {
 
     public static boolean DateNullCS(String date){
 
-        if(date == ""){
+        if(date.equals("") ){
 
             return true ;
 
@@ -77,7 +79,7 @@ public class SeizureControl {
 
 
 
-        if (text.matches("^[0-9]+$")&& text.length()== 8) {
+        if (text.matches("^[0-9]+$")&& text.length()== 10) {
 
             return true;
 
@@ -107,24 +109,19 @@ public class SeizureControl {
 
 
 
-    private static final String EMAIL_PATTERN
 
-            = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-    private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
     private static final String pwd=  "^[A-Za-z0-9]+$";
 
     private static Pattern pattern1 = Pattern.compile(pwd);
 
-    public static boolean valiemail(final String hex) {
 
-        matcher = pattern.matcher(hex);
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-        return ((Matcher) matcher).matches();
-
+    public static boolean valiemail(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailStr);
+        return matcher.find();
     }
 
     public static boolean validPasswor(final String hex) {

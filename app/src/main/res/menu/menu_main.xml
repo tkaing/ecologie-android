@@ -4,15 +4,15 @@
     tools:context="com.example.recycle1.views.MainActivity">
     <item
         android:id="@+id/connexion"
-        android:title="@string/connexion"
+        android:title="@string/connection"
         app:showAsAction="never" />
     <item
         android:id="@+id/Parcours"
-        android:title="@string/Parcours"
+        android:title="@string/course"
         app:showAsAction="never" />
     <item
         android:id="@+id/profil"
-        android:title="@string/Profil"
+        android:title="@string/profile"
         app:showAsAction="never" />
 
 </menu>

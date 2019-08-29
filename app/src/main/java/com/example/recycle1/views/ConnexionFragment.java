@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.recycle1.Methodes;
 import com.example.recycle1.R;
+import com.example.recycle1.SeizureControl;
 import com.example.recycle1.data.dto.LoginDTO;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.model.Course;
@@ -29,6 +31,8 @@ import butterknife.ButterKnife;
 
 public class ConnexionFragment extends Fragment {
 
+    Methodes methodes = new Methodes();
+    //Bind view
     @BindView(R.id.login_ev) TextView login_ev;
     @BindView(R.id.password_ev) TextView password_ev;
     @BindView(R.id.connexion_btn) Button connexion_btn;
@@ -37,7 +41,7 @@ public class ConnexionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle(R.string.Connexion);
+        getActivity().setTitle(R.string.connection);
         User user = new User();
 
 
@@ -56,25 +60,42 @@ public class ConnexionFragment extends Fragment {
         createNewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new NewUserFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_home, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                methodes.GoTo(new NewUserFragment(), getFragmentManager());
 
 
             }
         });
 
-        connexion_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserDTO userDTO = new UserDTO("a@live.fr","HYj1VEZJ");
-                //UserDTO userDTO = new UserDTO(login_ev.getText().toString(),password_ev.getText().toString());
-                NetworkProvider.getInstance().Login(userDTO,view.getContext());
+        connexion_btn.setOnClickListener(view1 -> {
+            //UserDTO userDTO = new UserDTO("a@live.fr","HYj1VEZJ");
+            SeizureControl seizureControl = new SeizureControl();
+            Methodes methodes = new Methodes();
+
+            if (seizureControl.isNull(login_ev.getText().toString())) {
+                methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.emptyMailSC) , "Ok");
 
             }
+            /*
+            if (seizureControl.valiemail(login_ev.getText().toString())) {
+                methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information),
+                        getContext().getString(R.string.invalidMailSC) , "Ok");
+
+            }
+            */
+            if (seizureControl.isNull(password_ev.getText().toString())) {
+                methodes.Alert(getContext(),getContext().getString(R.string.missingInformation),
+                        getContext().getString(R.string.PasswordSC) , "Ok");
+
+            }
+            /*
+            Test for password valide
+            if (seizureControl.validPasswor(password_ev.getText().toString())) {
+                methodes.Alert(getContext(),"Inforation invalide", "Le nom n'est composé que de lettre " , "Ok");
+            }
+            */
+            UserDTO userDTO = new UserDTO(login_ev.getText().toString(),password_ev.getText().toString());
+            NetworkProvider.getInstance().Login(userDTO, view1.getContext());
+
         });
 
 

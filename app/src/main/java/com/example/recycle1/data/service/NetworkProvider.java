@@ -2,21 +2,18 @@ package com.example.recycle1.data.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.recycle1.Methodes;
+import com.example.recycle1.Helpers;
 import com.example.recycle1.R;
 import com.example.recycle1.data.dto.AssociationDTO;
 import com.example.recycle1.data.dto.CourseDTO;
-import com.example.recycle1.data.dto.LoginDTO;
 import com.example.recycle1.data.dto.UserDTO;
 import com.example.recycle1.data.mapper.CourseMapper;
 import com.example.recycle1.data.model.Course;
 import com.example.recycle1.views.ConfirmNewUserFragment;
-import com.example.recycle1.views.NewUserFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +26,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkProvider {
-    Methodes methodes = new Methodes();
+    Helpers helpers = new Helpers();
     EcologieServices ecologieServices;
 
     //Singleton pas tres bien car tout le monde peut y acceder
@@ -145,6 +142,39 @@ public class NetworkProvider {
         });
 
     }
+    public void getCourseCriteria (String id, Listner<Course> courseListner) {
+        //defining the call
+
+
+        // create parameter with HashMap
+        Map<String, String> params = new HashMap<>();
+        params.put("_id", id);
+
+        Call<CourseDTO> call = ecologieServices.refreshAppMetaConfigCourse(params);
+        //calling the api
+        call.enqueue(new Callback<CourseDTO>() {
+            @Override
+            public void onResponse(Call<CourseDTO> call, Response<CourseDTO> response) {
+
+
+                Course course = new Course(response.body().getName(),  response.body().getStartOn(), response.body().getEndOn(), response.body().getLocation(), response.body().getAddress(), response.body().getZip(),
+                        response.body().getCity(), response.body().getRating(), response.body().getGlassWaste(), response.body().getPlasticWaste(), response.body().getFoodWaste() ,
+                        response.body().getOtherWaste(), response.body().getAssociation(), response.body().getCreatedAt());
+
+                courseListner.onSuccess(course);
+                Log.d("TestPost", "end da");
+                Log.d("TestPost", response.body().toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<CourseDTO> call, Throwable t) {
+                Log.d("TestPost","did you really think that's will work ? really?");
+                Log.e("TestPost",t.toString());
+            }
+        });
+
+    }
     public void putUser (UserDTO userDTO, Context context, FragmentManager fragmentManager) {
         //defining the call
         Log.d("putUser",userDTO.toString());
@@ -156,16 +186,16 @@ public class NetworkProvider {
 
 
                 if(response.code() == 200 ) {
-                    methodes.SendMailPassword(userDTO.getLastname(),userDTO.getEmail(), response.body().getPassword());
-                    methodes.GoTo(new ConfirmNewUserFragment(), fragmentManager);
+                    helpers.SendMailPassword(userDTO.getLastname(),userDTO.getEmail(), response.body().getPassword());
+                    helpers.GoTo(new ConfirmNewUserFragment(), fragmentManager);
 
 
                 }
                 if (response.code() == 422) {
-                    methodes.Alert(context, "Error",context.getString(R.string.error422putUser),"Ok");
+                    helpers.Alert(context, "Error",context.getString(R.string.error422putUser),"Ok");
                 }
                 if (response.code() == 500) {
-                    methodes.Alert(context, "Error",context.getString(R.string.serverError),"Ok");
+                    helpers.Alert(context, "Error",context.getString(R.string.serverError),"Ok");
                 }
                 Log.d("putUser", response.body().toString());
             }

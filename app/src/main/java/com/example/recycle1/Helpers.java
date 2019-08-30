@@ -17,12 +17,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
 
-public class Methodes {
+public class Helpers {
 
 
 
@@ -79,10 +80,17 @@ public class Methodes {
 
         thread.start();
     }
-    public void drawMarker(String location , String title, Float color, GoogleMap mMap, Context context) {
+    public void drawMarker(String location , String title,String id, Float color, GoogleMap mMap, Context context) {
 
         Geocoder geocoder = new Geocoder(context);
         List<Address> addresses;
+        String tag= "";
+        if(color ==  BitmapDescriptorFactory.HUE_AZURE ) {
+            tag="A" + id;
+
+        } else {
+            tag="C" + id;
+        }
 
         try {
             addresses = geocoder.getFromLocationName(location, 1);
@@ -93,10 +101,11 @@ public class Methodes {
                 Log.d("latitudeLongitude",latitude + " " + longitude );
                 if (mMap != null) {
                     LatLng gps = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(gps)
                             .title(title)
                             .icon(BitmapDescriptorFactory.defaultMarker(color)));
+                    marker.setTag(tag);
                 }
             }
 

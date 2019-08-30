@@ -64,4 +64,8 @@
     <string name="noGps">Your GPS seems to be disabled, do you want to enable it?</string>
     <string name="no">No</string>
     <string name="currentLocation">Current Position</string>
+    <string name="notLogin">Access denied</string>
+    <string name="notLoginMsg">You must be login to acess to your profile</string>
+    <string name="deconnect">Disconnected</string>
+    <string name="apiPlaceKey">AIzaSyD40rsxQ8VNTfkw0NOv5TXKMELK2mBTa6k</string>
 </resources>

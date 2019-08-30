@@ -1,30 +1,21 @@
 package com.example.recycle1.views;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.recycle1.Methodes;
+import com.example.recycle1.Helpers;
 import com.example.recycle1.R;
 import com.example.recycle1.SeizureControl;
 import com.example.recycle1.data.dto.UserDTO;
-import com.example.recycle1.data.model.User;
 import com.example.recycle1.data.service.NetworkProvider;
-
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +24,7 @@ import butterknife.ButterKnife;
 public class NewUserFragment extends Fragment {
 
 
-     Methodes methodes = new Methodes();
+     Helpers helpers = new Helpers();
 
     //Bind view
     @BindView(R.id.firstname_ev) TextView firstname_ev;
@@ -66,49 +57,49 @@ public class NewUserFragment extends Fragment {
             public void onClick(View view) {
 
                 SeizureControl seizureControl = new SeizureControl();
-                Methodes methodes = new Methodes();
+                Helpers helpers = new Helpers();
 
 
 
                 if (seizureControl.isNull(email_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.emailIsEmptySC) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.emailIsEmptySC) , "Ok");
 
                 }
 
                 /*
                 if (seizureControl.valiemail(email_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.invalidEmail) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.invalidEmail) , "Ok");
 
                 }
                   */
                 if (seizureControl.isNull(firstname_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.firstnameIsEmpty) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.firstnameIsEmpty) , "Ok");
 
                 }
                 if (seizureControl.isNull(lastname_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.lastnameIsEmpty) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.lastnameIsEmpty) , "Ok");
                 }
                 if (seizureControl.DateNullCS(birthdate_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.birthdateIsEmpty) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.birthdateIsEmpty) , "Ok");
 
                 }
                 /*
                 if (seizureControl.isNull(adresse_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.adressIsempty) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.adressIsempty) , "Ok");
 
                 }
                 */
                 if (seizureControl.isNull(adresse_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.adressIsEmptySC) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.adressIsEmptySC) , "Ok");
 
                 }
 
                 if (seizureControl.isNull(phone_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.phoneIsEmpty) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.missingInformation), getContext().getString(R.string.phoneIsEmpty) , "Ok");
 
                 }
                 if (seizureControl.isTel(phone_ev.getText().toString())) {
-                    methodes.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.invalidPhone) , "Ok");
+                    helpers.Alert(getContext(),getContext().getString(R.string.invalid_Information), getContext().getString(R.string.invalidPhone) , "Ok");
 
                 }
 

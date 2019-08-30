@@ -2,11 +2,9 @@ package com.example.recycle1.views;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,7 +14,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -34,16 +31,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.recycle1.Methodes;
+import com.example.recycle1.Helpers;
 import com.example.recycle1.R;
 import com.example.recycle1.data.dto.AssociationDTO;
-import com.example.recycle1.data.dto.CourseDTO;
-import com.example.recycle1.data.dto.UserDTO;
-import com.example.recycle1.data.model.Association;
 import com.example.recycle1.data.model.Course;
-import com.example.recycle1.data.service.GMailSender;
 import com.example.recycle1.data.service.NetworkProvider;
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -51,18 +44,27 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback , CourseFragment.CourseActivityListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback , CourseFragment.CourseActivityListener, GoogleMap.OnMarkerClickListener {
 
 
-    Methodes methodes = new Methodes();
-    //Test get position
+    Helpers helpers = new Helpers();
+    Boolean isConnected = false;
+    HomeActivity.CourseActivityListener courseListener;
+
+
+
+
+    //get position conf
     public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
     public static final int LOCATION_UPDATE_MIN_TIME = 5000;
     public static final  Float associationsMarkercolor = BitmapDescriptorFactory.HUE_AZURE;
@@ -72,11 +74,13 @@ public class HomeActivity extends AppCompatActivity
 
 
 
+
+
     private LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             if (location != null) {
-                methodes.drawMarkerCurrentLocation(location,mMap,getBaseContext());
+                helpers.drawMarkerCurrentLocation(location,mMap,getBaseContext());
                 mLocationManager.removeUpdates(mLocationListener);
             } else {
                 Log.e("Location","Location is null");
@@ -110,7 +114,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        getCurrentLocation();
     }
 
     @Override
@@ -123,6 +126,7 @@ public class HomeActivity extends AppCompatActivity
     private void getCurrentLocation() {
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        String tag = "L";
 
         Location location = null;
         if (!(isGPSEnabled || isNetworkEnabled)) {
@@ -140,7 +144,7 @@ public class HomeActivity extends AppCompatActivity
 
 
                 } else {
-                    methodes.Alert(this,this.getString(R.string.noGpsAndCoTitle), this.getString(R.string.enableGPSandConxMSG), "Ok");
+                    helpers.Alert(this,this.getString(R.string.noGpsAndCoTitle), this.getString(R.string.enableGPSandConxMSG), "Ok");
                 }
 
                 if (isGPSEnabled) {
@@ -148,15 +152,13 @@ public class HomeActivity extends AppCompatActivity
                             LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
                     location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                } else {
-
-                           }
+                }
 
 
             }
         }
         if (location != null) {
-            methodes.drawMarkerCurrentLocation(location,mMap,getBaseContext());
+            helpers.drawMarkerCurrentLocation(location,mMap,getBaseContext());
         }
     }
 
@@ -173,23 +175,24 @@ public class HomeActivity extends AppCompatActivity
     /**
      * Variable declaration
      */
-    Boolean isConnected = false;
+
     private GoogleMap mMap;
     private final int REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 1;
     public static boolean inHome = false;
 
 
 
+
+
+    PlacesClient placesClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
-
         //Get Session variable to check if the user is connected
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        setTitle("Home");
 
 
         if(sharedPreferences.getBoolean("isConnected",true)){
@@ -207,12 +210,7 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
-        inHome = true;
-        this.setTitle("Home");
-
-
 
 
         //header side menu information
@@ -220,56 +218,25 @@ public class HomeActivity extends AppCompatActivity
         View headerview = navigationView.getHeaderView(0);
         TextView profilename = (TextView) headerview.findViewById(R.id.name);
         LinearLayout header = (LinearLayout) headerview.findViewById(R.id.nav_header);
+        Context context = this;
+        headerview.setOnClickListener(v -> {
+            // Your code here
+
+            if (isConnected) {
+                HideHomeFragment();
+                helpers.GoTo(new ProfileFragment(),getSupportFragmentManager());
+            } else {
+                helpers.Alert(context, context.getString(R.string.notLogin), context.getString(R.string.notLoginMsg), "Ok");
+            }
+        });
 
 
 
-        //id of user
-        if(isConnected){
-            profilename.setText(sharedPreferences.getString("firstname","No Name"));
-            headerview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Your code here
-                    sharedPreferences
-                            .edit()
-                            .putBoolean("isConnected", false)
-                            .putString("email","")
-                            .putString("firstname","")
-                            .putString("lastname","")
-                            .putString("birthdate","")
-                            .putString("createdAt","")
-                            .apply();
-                    Toast.makeText(getApplication(),"Disconnected",Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            headerview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Your code here
-                    Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
-                    if (mapFragment != null) {
-                        getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
-                    }
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map2);
+        mapFragment.getMapAsync(this);
 
-
-                    FragmentTransaction profileFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    profileFragmentTransaction.replace(R.id.content_home, new ProfileFragment());
-
-                    profileFragmentTransaction.commit();
-                }
-            });
-
-        }
-
-        if (inHome) {
-            setTitle("Home");
-
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map2);
-            mapFragment.getMapAsync(this);
-        }
 
 
         // Obtain the Fragment and get menu when it's ready to be used.
@@ -284,73 +251,64 @@ public class HomeActivity extends AppCompatActivity
 
         getAssociations();
         getCourses();
+        AutocompleteSupportFragment autocompleteSupportFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
+        String apiPLaceKey = this.getString(R.string.apiPlaceKey);
+        if(!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(),apiPLaceKey);
+        }
+
+        placesClient = Places.createClient(this);
+
+        /* setPlaceFields is used for the purpose when they autocompleteplaces returns the places and if you click on any placed than what
+         field will you gonna get after clicking on that speciic place */
+        autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG,Place.Field.NAME));
+        autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                final LatLng latLng = place.getLatLng();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f));
+
+                Log.i("PlaceApi","onPlaceSelected: " + latLng.latitude + "\n" + latLng.longitude);
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+
+            }
+        });
 
     }
-
-
-
-
 
     /** METHODS for MAP  */
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        if (inHome) {
-
             mMap = googleMap;
+            mMap.setOnMarkerClickListener(this);
+
             // Here, thisActivity is the current activity
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
 
                 // Permission is not granted
-                // Should we show an explanation?
-                // Add a marker in Paris and move the camera
-                Log.d("testloc","strange , why i'm priting that");
-                LatLng paris = new LatLng(48.8534, 2.3488);
-                mMap.addMarker(new MarkerOptions().position(paris).title("Marker in Paris"));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(paris, 17f));
+                buildAlertMessageNoGps();
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // Show an explanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
+                    buildAlertMessageNoGps();
                 } else {
                     // No explanation needed; request the permission
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                             REQUEST_PERMISSION_ACCESS_FINE_LOCATION);
-
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
-
-
                 }
-            } else {
-                getCurrentLocation();
             }
 
 
-
-
-        } else {
-
-            // Add a marker in Paris and move the camera
-            LatLng paris = new LatLng(48.8534, 2.3488);
-            mMap.addMarker(new MarkerOptions().position(paris).title("Marker in Paris"));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(paris, 17f));
-            Log.e("UserLocation", "location null");
-        }
-
-
     }
-
-
-
 
 
     @Override
@@ -372,48 +330,48 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the HomeActivity/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        /*Handle action bar item clicks here. The action bar will handle clicks on the HomeActivity/Up button, so long
+        as you specify a parent activity in AndroidManifest.xml.*/
         int id = item.getItemId();
+        if (id == R.id.login) {
+            if(isConnected){
+                //Get Session variable to check if the user is connected
+                SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                // Your code here
+                sharedPreferences
+                        .edit()
+                        .putBoolean("isConnected", false)
+                        .putString("email","")
+                        .putString("firstname","")
+                        .putString("lastname","")
+                        .putString("birthdate","")
+                        .putString("createdAt","")
+                        .apply();
+                isConnected=false;
+                Toast.makeText(this,this.getString(R.string.deconnect),Toast.LENGTH_LONG).show();
 
-        //noinspection SimplifiableIfStatement
-        Fragment fragmenLogin = null;
-        if (id == R.id.login) {fragmenLogin = new ConnexionFragment();}
 
-        // redirection vers login
-        if (fragmenLogin != null) {
-
-            if (inHome) { HideMap();}
-
-
-                    Fragment fragment = new ConnexionFragment();
-
-            if(!fragment.isVisible()) {
-                FragmentTransaction fragmentTransactionLog = getSupportFragmentManager().beginTransaction();
-                fragmentTransactionLog.replace(R.id.content_home, fragmenLogin,"login");
-                fragmentTransactionLog.commit();
-                Toast.makeText(this, "login", Toast.LENGTH_LONG).show();
             }
-            return true;
+            //Getting current Fragment
+            if (getFragmentManager().getBackStackEntryCount() > 1) {
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_connexion);
+                if (f instanceof ConnexionFragment) {
+                    // Do something
+                    return super.onOptionsItemSelected(item);
+                } else {
+                    HideHomeFragment();
+                }
+            }
+            helpers.GoTo(new ConnexionFragment(), getSupportFragmentManager());
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public Fragment getVisibleFragment(){
-        FragmentManager fragmentManager = HomeActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(Fragment fragment : fragments){
-                if(fragment != null && fragment.isVisible())
-                    return fragment;
-            }
-        }
-        return null;
-    }
 
-    private void HideMap() {
+    private void HideHomeFragment() {
+        Fragment autoCompleteFragment = getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        getSupportFragmentManager().beginTransaction().hide(autoCompleteFragment).commit();
         Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
         getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
     }
@@ -436,16 +394,7 @@ public class HomeActivity extends AppCompatActivity
                 break;
         }
         if (fragment != null) {
-
-            if (inHome) {
-                Log.d("test", "yes");
-                Fragment mapFragment = getSupportFragmentManager().findFragmentById(R.id.map2);
-
-                getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
-
-            }
-
-
+            HideHomeFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_home, fragment);
 
@@ -469,7 +418,8 @@ public class HomeActivity extends AppCompatActivity
                 if(Geocoder.isPresent()) {
                     for( AssociationDTO association: data){
 
-                        methodes.drawMarker(association.getLocation(),association.getName(),associationsMarkercolor,mMap,getBaseContext());
+
+                        helpers.drawMarker(association.getLocation(),association.getName(), association.getId(),associationsMarkercolor,mMap,getBaseContext());
 
 
 
@@ -497,7 +447,7 @@ public class HomeActivity extends AppCompatActivity
                         String completeAdress = course.getAddress() + " " + course.getZip() + " " + course.getCity();
 
 
-                        methodes.drawMarker(completeAdress,course.getName(),coursesMarkercolor,mMap,getBaseContext());
+                        helpers.drawMarker(completeAdress,course.getName(),course.getId(),coursesMarkercolor,mMap,getBaseContext());
                     }
 
                 }
@@ -534,4 +484,64 @@ public class HomeActivity extends AppCompatActivity
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+       /* Log.d("testTagOTH", marker.getTitle());
+        if (marker.getTag() != null) {
+            char tag = marker.getTag().toString().charAt(0);
+            String id = marker.getTag().toString().substring(1);
+
+
+            if (tag == 'A') {
+                Log.d("testTagAsso", marker.getTitle() + " " + id);
+                return false;
+
+            }
+            else if (tag == 'C') {
+
+                Log.d("testTagCourse", marker.getTitle() + " " + id);
+
+                NetworkProvider networkProvider = new NetworkProvider();
+                networkProvider.getCourseCriteria(id, new NetworkProvider.Listner<Course>() {
+                    @Override
+                    public void onSuccess(Course data) {
+                        Course course = data;
+                        courseListener.onCourseSent(course);
+                        Fragment fragment = new CourseShowFragment();
+                        ((CourseShowFragment) fragment).setCourseShow(course);
+
+                        helpers.GoTo(fragment, getSupportFragmentManager());
+
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                       Toast.makeText(getBaseContext(), "Please wait few seconds ...",Toast.LENGTH_SHORT).show();
+                       Log.e("GotoCourseFromHome" , "Error : " + t.toString())
+;
+                    }
+                });
+                return false;
+
+
+            }
+            else if (tag == 'L') {
+                Log.d("testTagCurLocation", marker.getTitle() + " " + id);
+                return false;
+
+            }
+
+        }*/
+
+        return false;
+    }
+    public interface CourseActivityListener {
+        void onCourseSent(Course course);
+    }
 }
+
+
+
+
+

@@ -4,6 +4,7 @@ import java.util.Date;
 import com.google.gson.annotations.SerializedName;
 public class AssociationDTO {
 
+    @SerializedName ("_id") private String id;
     @SerializedName ("name") private String name;
     @SerializedName ("email") private String email;
     @SerializedName ("identifier") private String identifier;
@@ -11,6 +12,10 @@ public class AssociationDTO {
     @SerializedName("location") private String location;
     @SerializedName("createdAt") String createdAt;
     @SerializedName("birthdate") String birthdate;
+
+    public String getId() {
+        return id;
+    }
 
     public String getEmail() {
         return email;

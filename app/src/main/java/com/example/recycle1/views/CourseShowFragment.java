@@ -18,7 +18,7 @@ import java.util.Date;
 
 import static com.example.recycle1.views.HomeActivity.inHome;
 
-public class CourseShowFragment extends Fragment implements CourseFragment.CourseActivityListener {
+public class CourseShowFragment  extends Fragment implements CourseFragment.CourseActivityListener, HomeActivity.CourseActivityListener {
 
     Course courseShow;
     ArrayList<Course> courseList = new ArrayList<>();

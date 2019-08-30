@@ -18,10 +18,31 @@ public class Course {
     private String association;
     private String createdAt;
 
+    public Course() {
+    }
+
+    public Course(String name, String startOn, String endOn, String location, String address, String zip, String city, String rating, String glassWaste, String plasticWaste, String foodWaste, String otherWaste, String association, String createdAt) {
+        this.name = name;
+        this.startOn = startOn;
+        this.endOn = endOn;
+        this.location = location;
+        this.address = address;
+        this.zip = zip;
+        this.city = city;
+        this.rating = rating;
+        this.glassWaste = glassWaste;
+        this.plasticWaste = plasticWaste;
+        this.foodWaste = foodWaste;
+        this.otherWaste = otherWaste;
+        this.association = association;
+        this.createdAt = createdAt;
+    }
+
+
+
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }

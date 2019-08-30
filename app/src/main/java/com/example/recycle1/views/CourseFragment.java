@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.recycle1.Helpers;
 import com.example.recycle1.R;
 import com.example.recycle1.data.dto.CourseDTO;
 import com.example.recycle1.data.model.Course;
@@ -29,7 +30,8 @@ public class CourseFragment extends Fragment {
     String coursePath = "" ;
     List<CourseDTO> courseList= new ArrayList<>();
     CourseActivityListener courseListener;
-    Course course;
+
+    Helpers helpers = new Helpers();
 
     public interface CourseActivityListener {
         void onCourseSent(Course course);
@@ -69,11 +71,9 @@ public class CourseFragment extends Fragment {
 
             Fragment fragment = new CourseShowFragment();
             ((CourseShowFragment) fragment).setCourseShow(course);
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.content_home, fragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+
+            helpers.GoTo(fragment, getFragmentManager());
+
 
         });
     }

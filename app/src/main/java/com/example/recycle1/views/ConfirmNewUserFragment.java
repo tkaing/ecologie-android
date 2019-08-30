@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.recycle1.Methodes;
+import com.example.recycle1.Helpers;
 import com.example.recycle1.R;
 
 import butterknife.BindView;
@@ -23,7 +23,7 @@ import static com.example.recycle1.views.HomeActivity.inHome;
 public class ConfirmNewUserFragment extends Fragment {
 
 
-    Methodes methodes = new Methodes();
+    Helpers helpers = new Helpers();
     @BindView(R.id.text) TextView text;
     @BindView(R.id.sendbtn) Button sendBtn;
 
@@ -42,7 +42,7 @@ public class ConfirmNewUserFragment extends Fragment {
         ButterKnife.bind(this,view);
 
         sendBtn.setOnClickListener(view1 -> {
-            methodes.Alert(getContext(),"Email",getContext().getString(R.string.sendAutherMail),"Ok");
+            helpers.Alert(getContext(),"Email",getContext().getString(R.string.sendAutherMail),"Ok");
             text.setText(getContext().getString(R.string.TextReSendMail));
         });
         return view;

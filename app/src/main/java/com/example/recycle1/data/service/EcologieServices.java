@@ -31,6 +31,10 @@ public interface EcologieServices {
     @GET("users") Call<List<UserDTO>> getUsers();
 
     @Headers("Content-Type: application/json")
+    @POST("courses/criteria")
+    Call<CourseDTO> refreshAppMetaConfigCourse(@QueryMap Map<String, String> id);
+
+    @Headers("Content-Type: application/json")
     @POST("users/criteria")
     Call<List<UserDTO>> refreshAppMetaConfig(@QueryMap Map<String, String> id);
 
